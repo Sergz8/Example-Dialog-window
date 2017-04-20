@@ -1,0 +1,67 @@
+from tkinter import *
+# Импортируем "подмодуль" Tkinter - tkinter.filedialog, в котором описаны
+# классы диалоговых окон
+from tkinter.filedialog import *
+# диалоговые окна tkinter.messagebox:
+# Диалоговые окна для вывода сообщений, предупреждений,
+# получения от пользователя ответа "да" или "нет" и т. п.
+from tkinter.messagebox import *
+import fileinput
+
+#Создаем объект op: вызывает диалоговое окно "Открыть"
+#с помощью цикла for извлекаем строки последовательно
+# и помещаем их, например, в текстовое поле
+def _open():
+    op = askopenfilename()
+    for l in fileinput.input(op):
+        txt.insert(END, l)
+
+#------------------------------------------------------------
+#сохраняем текст, набранный в текстовом поле
+#создается объект sa который сохраняет диалоговое "Сохранить как..."
+def _save():
+    sa = asksaveasfilename()
+    letter = txt.get(1.0, END)
+    f = open(sa, "w")
+    f.write(letter)
+    f.close()
+#----------------------------------------------
+#В функции close_win вызывается окно askyesno, которое позволяет
+#получить от пользователя два ответа (true и false).
+#В данном случае при положительном ответе сработает ветка if и
+#главное окно будет закрыто. В случае нажатия пользователем кнопки
+# "No" окно просто закроется
+def close_win():
+    if askyesno("Exit", "Cохранить текст или нет?"):
+        _save()
+    else:
+        root.destroy()
+#-------------------------------------------------------------
+#В функции about происходит вызов окна showinfo,
+#позволяющее выводить сообщение для пользователя с кнопкой OK.
+#Первый аргумент — это то, что выведется в заголовке окна,
+# а второй — то, что будет содержаться в теле сообщения.
+def about():
+    showinfo("Editor", "This is text editor.\n(test version)")
+#-------------------------------------------------------------
+root = Tk()
+
+m = Menu(root)
+root.config(menu=m)
+
+fm = Menu(m)
+m.add_cascade(label="File", menu=fm)
+fm.add_command(label="Open...", command=_open)
+#подменю выход
+fm.add_command(label="Exit",command=close_win)
+
+hm = Menu(m)
+m.add_cascade(label="Help",menu=hm)
+hm.add_command(label="About",command=about)
+
+
+txt = Text(root, width=40, height=15, font="12")
+txt.pack()
+
+
+root.mainloop()
